@@ -68,14 +68,14 @@
             {% if result %}
             <div class="animate-fade-in">
                 <!-- Result Header Card -->
-                <div class="glass p-8 rounded-2xl border-l-8 {% if result.color == 'red' %}border-red-500{% elif result.color == 'orange' %}border-orange-500{% else %}border-green-500{% endif %} mb-8">
+                <div class="glass p-8 rounded-2xl border-l-8 {% if result.color == 'red' %}border-red-500{% elif result.color == 'orange' %}border-orange-500{% elif result.color == 'yellow' %}border-yellow-500{% else %}border-green-500{% endif %} mb-8">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                         <div>
-                            <span class="text-xs font-bold uppercase tracking-widest {% if result.color == 'red' %}text-red-400{% elif result.color == 'orange' %}text-orange-400{% else %}text-green-400{% endif %} mb-2 block">
+                            <span class="text-xs font-bold uppercase tracking-widest {% if result.color == 'red' %}text-red-400{% elif result.color == 'orange' %}text-orange-400{% elif result.color == 'yellow' %}text-yellow-400{% else %}text-green-400{% endif %} mb-2 block">
                                 {{ result.category }} Result
                             </span>
                             <h2 class="text-4xl font-bold font-heading">{{ result.class }}</h2>
-                            <p class="text-gray-400 mt-2">Patient: <span class="text-white">{{ result.patient_name }}</span> ({{ result.patient_age }}y, {{ result.patient_gender }}) | Status: <span class="{% if result.color == 'red' %}text-red-400{% else %}text-green-400{% endif %} font-bold">{{ result.status }}</span></p>
+                            <p class="text-gray-400 mt-2">Patient: <span class="text-white">{{ result.patient_name }}</span> ({{ result.patient_age }}y, {{ result.patient_gender }}) | Status: <span class="{% if result.color == 'red' %}text-red-400{% elif result.color == 'yellow' %}text-yellow-400{% else %}text-green-400{% endif %} font-bold">{{ result.status }}</span></p>
                         </div>
                         <div class="text-right">
                             <div class="inline-flex flex-col items-center p-4 rounded-2xl bg-white/5 border border-white/10">
@@ -112,9 +112,9 @@
                             <h4 class="font-bold font-heading mb-4 text-cyan uppercase text-sm tracking-widest">Risk Assessment</h4>
                             <div class="flex items-center space-x-4">
                                 <div class="flex-grow bg-white/5 h-2 rounded-full overflow-hidden">
-                                    <div class="h-full {% if result.color == 'red' %}bg-red-500 w-[85%]{% elif result.color == 'orange' %}bg-orange-500 w-[50%]{% else %}bg-green-500 w-[15%]{% endif %}"></div>
+                                    <div class="h-full {% if result.color == 'red' %}bg-red-500 w-[85%]{% elif result.color == 'orange' %}bg-orange-500 w-[55%]{% elif result.color == 'yellow' %}bg-yellow-500 w-[35%]{% else %}bg-green-500 w-[15%]{% endif %}"></div>
                                 </div>
-                                <span class="font-bold text-sm {% if result.color == 'red' %}text-red-400{% else %}text-green-400{% endif %}">{{ result.risk }}</span>
+                                <span class="font-bold text-sm {% if result.color == 'red' %}text-red-400{% elif result.color == 'yellow' %}text-yellow-400{% else %}text-green-400{% endif %}">{{ result.risk }}</span>
                             </div>
                             <p class="text-[10px] text-gray-500 mt-4 uppercase tracking-tighter">AI determined risk level based on morphological features</p>
                         </div>
