@@ -1,0 +1,68 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<section class="py-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-20 animate-fade-in">
+            <h1 class="text-5xl font-bold font-heading mb-6">Advanced <span class="text-cyan">Capabilities</span></h1>
+            <p class="text-gray-400 max-w-2xl mx-auto text-lg">A comprehensive suite of tools designed for the modern radiology workflow.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Feature 1 -->
+            <div class="glass p-10 rounded-3xl border-white/5 hover:border-cyan/30 transition-all group animate-on-scroll">
+                <div class="w-16 h-16 bg-cyan/10 rounded-2xl flex items-center justify-center mb-8 group-hover:bg-cyan/20 transition-all">
+                    <i class="fas fa-stethoscope text-cyan text-3xl"></i>
+                </div>
+                <h3 class="text-2xl font-bold font-heading mb-4">Multi-Cancer Detection</h3>
+                <p class="text-gray-400 leading-relaxed">Simultaneous support for Brain, Breast, Kidney, Lung, and Colon cancer screening using a unified AI engine.</p>
+            </div>
+
+            <!-- Feature 2 -->
+            <div class="glass p-10 rounded-3xl border-white/5 hover:border-cyan/30 transition-all group animate-on-scroll" style="animation-delay: 0.1s;">
+                <div class="w-16 h-16 bg-blue-500/10 rounded-2xl flex items-center justify-center mb-8 group-hover:bg-blue-500/20 transition-all">
+                    <i class="fas fa-bolt text-blue-500 text-3xl"></i>
+                </div>
+                <h3 class="text-2xl font-bold font-heading mb-4">Real-Time Analysis</h3>
+                <p class="text-gray-400 leading-relaxed">Get diagnostic results in under 2 seconds. Our optimized inference engine minimizes patient waiting time.</p>
+            </div>
+
+            <!-- Feature 3 -->
+            <div class="glass p-10 rounded-3xl border-white/5 hover:border-cyan/30 transition-all group animate-on-scroll" style="animation-delay: 0.2s;">
+                <div class="w-16 h-16 bg-green-500/10 rounded-2xl flex items-center justify-center mb-8 group-hover:bg-green-500/20 transition-all">
+                    <i class="fas fa-file-medical text-green-500 text-3xl"></i>
+                </div>
+                <h3 class="text-2xl font-bold font-heading mb-4">Automated Reporting</h3>
+                <p class="text-gray-400 leading-relaxed">Instant generation of professional PDF reports with histological interpretations and recommendations.</p>
+            </div>
+
+            <!-- Feature 4 -->
+            <div class="glass p-10 rounded-3xl border-white/5 hover:border-cyan/30 transition-all group animate-on-scroll" style="animation-delay: 0.3s;">
+                <div class="w-16 h-16 bg-orange-500/10 rounded-2xl flex items-center justify-center mb-8 group-hover:bg-orange-500/20 transition-all">
+                    <i class="fas fa-chart-pie text-orange-500 text-3xl"></i>
+                </div>
+                <h3 class="text-2xl font-bold font-heading mb-4">Confidence Scoring</h3>
+                <p class="text-gray-400 leading-relaxed">Detailed percentage-based confidence metrics for every prediction to assist clinical decision-making.</p>
+            </div>
+
+            <!-- Feature 5 -->
+            <div class="glass p-10 rounded-3xl border-white/5 hover:border-cyan/30 transition-all group animate-on-scroll" style="animation-delay: 0.4s;">
+                <div class="w-16 h-16 bg-purple-500/10 rounded-2xl flex items-center justify-center mb-8 group-hover:bg-purple-500/20 transition-all">
+                    <i class="fas fa-mobile-alt text-purple-500 text-3xl"></i>
+                </div>
+                <h3 class="text-2xl font-bold font-heading mb-4">Mobile Responsive</h3>
+                <p class="text-gray-400 leading-relaxed">Access the diagnostic portal from any device with a fully responsive and optimized interface.</p>
+            </div>
+
+            <!-- Feature 6 -->
+            <div class="glass p-10 rounded-3xl border-white/5 hover:border-cyan/30 transition-all group animate-on-scroll" style="animation-delay: 0.5s;">
+                <div class="w-16 h-16 bg-red-500/10 rounded-2xl flex items-center justify-center mb-8 group-hover:bg-red-500/20 transition-all">
+                    <i class="fas fa-shield-alt text-red-500 text-3xl"></i>
+                </div>
+                <h3 class="text-2xl font-bold font-heading mb-4">Secure & Private</h3>
+                <p class="text-gray-400 leading-relaxed">Enterprise-grade security for medical data processing and automated file cleanup protocols.</p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

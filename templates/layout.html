@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Cancer Detection | Diagnostic Portal</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0B132B;
+            color: #ffffff;
+            scroll-behavior: smooth;
+        }
+        h1, h2, h3, .font-heading {
+            font-family: 'Outfit', sans-serif;
+        }
+        .glass {
+            background: rgba(28, 37, 65, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .text-cyan {
+            color: #6FFFE9;
+        }
+        .bg-cyan {
+            background-color: #6FFFE9;
+        }
+        .border-cyan {
+            border-color: #6FFFE9;
+        }
+        .nav-link:hover {
+            color: #6FFFE9;
+            transition: 0.3s;
+        }
+        .gradient-text {
+            background: linear-gradient(90deg, #6FFFE9, #5BC0BE);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        /* Custom Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+        /* Chatbot Styles */
+        #chat-widget {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 1000;
+        }
+        #chat-window {
+            display: none;
+            width: 350px;
+            height: 450px;
+            flex-direction: column;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <!-- Medical Chatbot Widget -->
+    <div id="chat-widget">
+        <!-- Chat Window -->
+        <div id="chat-window" class="glass rounded-2xl mb-4 overflow-hidden border border-cyan/30 flex flex-col">
+            <div class="bg-cyan p-4 flex justify-between items-center">
+                <span class="text-[#0B132B] font-bold flex items-center">
+                    <i class="fas fa-robot mr-2"></i> Medical Glossary AI
+                </span>
+                <button onclick="toggleChat()" class="text-[#0B132B] hover:scale-110 transition-all">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div id="chat-messages" class="flex-grow p-4 overflow-y-auto space-y-4 text-sm scrollbar-hide">
+                <div class="bg-white/5 p-3 rounded-lg text-gray-300">
+                    Hello! I'm here to help you understand technical terms used in your report or on this site. Ask me about terms like "Glioma", "Morphology", or "CNN".
+                </div>
+            </div>
+            <div class="p-4 border-t border-white/10 flex gap-2">
+                <input type="text" id="chat-input" placeholder="Ask about a term..." 
+                    class="flex-grow bg-[#0B132B] border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan text-sm">
+                <button onclick="handleChat()" class="bg-cyan text-[#0B132B] p-2 rounded-lg hover:bg-[#5BC0BE]">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+        <!-- Toggle Button -->
+        <button onclick="toggleChat()" class="bg-cyan text-[#0B132B] w-14 h-14 rounded-full shadow-lg shadow-cyan/30 flex items-center justify-center hover:scale-110 transition-all">
+            <i class="fas fa-comment-medical text-2xl" id="chat-icon"></i>
+        </button>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 glass border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <a href="/" class="flex items-center space-x-2">
+                        <i class="fas fa-dna text-cyan text-2xl"></i>
+                        <span class="text-xl font-bold font-heading tracking-tight">AI MEDICAL <span class="text-cyan">CENTER</span></span>
+                    </a>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-8">
+                        <a href="/" class="nav-link px-3 py-2 text-sm font-medium">Home</a>
+                        <a href="/detect" class="nav-link px-3 py-2 text-sm font-medium">Detection</a>
+                        <a href="/features" class="nav-link px-3 py-2 text-sm font-medium">Features</a>
+                        <a href="/about" class="nav-link px-3 py-2 text-sm font-medium">About</a>
+                        <a href="/contact" class="nav-link px-3 py-2 text-sm font-medium">Contact</a>
+                    </div>
+                </div>
+                <div class="md:hidden">
+                    <button class="text-white hover:text-cyan p-2">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-grow pt-16">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-[#0B132B] border-t border-white/10 py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div class="col-span-1 md:col-span-2">
+                    <div class="flex items-center space-x-2 mb-4">
+                        <i class="fas fa-dna text-cyan text-2xl"></i>
+                        <span class="text-xl font-bold font-heading">AI MEDICAL <span class="text-cyan">CENTER</span></span>
+                    </div>
+                    <p class="text-gray-400 max-w-xs mb-6">
+                        Pioneering the future of medical diagnostics with advanced artificial intelligence and deep learning technologies.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-cyan"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-cyan"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-cyan"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4 font-heading">Quick Links</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="/" class="hover:text-cyan">Home</a></li>
+                        <li><a href="/detect" class="hover:text-cyan">Detection</a></li>
+                        <li><a href="/about" class="hover:text-cyan">About Project</a></li>
+                        <li><a href="/contact" class="hover:text-cyan">Support</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4 font-heading">Legal</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-cyan">Privacy Policy</a></li>
+                        <li><a href="#" class="hover:text-cyan">Terms of Service</a></li>
+                        <li><a href="#" class="hover:text-cyan">AI Disclaimer</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="mt-12 pt-8 border-t border-white/5 text-center text-gray-500 text-sm">
+                <p>&copy; 2026 AI Medical Diagnostic Center. For educational and research purposes only.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth animations for elements
+        document.addEventListener('DOMContentLoaded', () => {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate-fade-in');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
+        });
+
+        // Chatbot Logic
+        const medicalTerms = {
+            "glioma": "A Glioma is a type of tumor that occurs in the brain and spinal cord. It begins in the glue-like supportive cells (glial cells) that surround nerve cells and help them function.",
+            "meningioma": "A meningioma is a tumor that arises from the meninges — the membranes that surround your brain and spinal cord. Most are noncancerous (benign), though rarely a meningioma can be cancerous (malignant).",
+            "morphology": "Morphology refers to the physical appearance, shape, and structure of cells or tissues. AI uses this to identify abnormalities that deviate from healthy tissue patterns.",
+            "adenocarcinoma": "Adenocarcinoma is a type of cancer that starts in glands that line the inside of the organs. It is the most common type of colon cancer and many types of lung cancer.",
+            "cnn": "Convolutional Neural Network (CNN) is a Deep Learning architecture specifically designed to detect patterns in images. In this site, it's used to identify cancerous features in MRI/CT scans.",
+            "watershed": "The Watershed algorithm is a classic image segmentation technique. It treats the image like a map where light areas are high and dark areas are low, helping to find the exact 'boundaries' of a tumor.",
+            "pathological": "In medicine, 'Pathological' means caused by or involving disease. A pathological finding on a scan indicates that an abnormality or tumor was detected.",
+            "benign": "Benign refers to a condition, tumor, or growth that is not cancerous. This means it does not spread to other parts of the body and is usually not life-threatening.",
+            "malignant": "Malignant means the tumor is cancerous. These tumors can grow uncontrollably and spread (metastasize) to other parts of the body, requiring urgent medical intervention.",
+            "carcinoma": "Carcinoma is a cancer that begins in the skin or in tissues that line or cover internal organs. Most cancers of the breast, lung, colon, and prostate are carcinomas.",
+            "lesion": "A lesion is an area of abnormal tissue. It can be benign (noncancerous) or malignant (cancerous). In imaging, it often refers to the tumor itself.",
+            "confidence": "The Confidence Score is the AI's 'certainty' level. A 95% score means the model is highly confident in its classification based on the patterns it identified in the image.",
+            "sarcoma": "Sarcoma is a type of cancer that can occur in various locations in your body, specifically in the bones and soft tissues (muscle, fat, blood vessels).",
+            "pituitary": "The pituitary gland is a small, pea-sized gland at the base of your brain. Tumors here (adenomas) can affect hormones and vision.",
+            "leukemia": "Leukemia is cancer of the body's blood-forming tissues, including the bone marrow and the lymphatic system. It usually involves the overproduction of abnormal white blood cells.",
+            "radiology": "Radiology is a medical specialty that uses medical imaging to diagnose and treat diseases seen within the body.",
+            "mri": "Magnetic Resonance Imaging (MRI) is a medical imaging technique used in radiology to form pictures of the anatomy and the physiological processes of the body.",
+            "ct scan": "A Computed Tomography (CT) scan uses computers and rotating X-ray machines to create cross-sectional images of the body.",
+            "hello": "Hello! I am the Medical Glossary Assistant. How can I help you understand your report today?",
+            "hi": "Hi there! Feel free to ask me about any medical or technical terms you see on this site.",
+            "help": "You can ask me definitions for terms like 'Glioma', 'Malignant', 'CNN', or 'Morphology'. Just type the word you want to know about!"
+        };
+
+        function toggleChat() {
+            const window = document.getElementById('chat-window');
+            window.style.display = window.style.display === 'flex' ? 'none' : 'flex';
+        }
+
+        function handleChat() {
+            const input = document.getElementById('chat-input');
+            const messages = document.getElementById('chat-messages');
+            const query = input.value.toLowerCase().trim();
+            
+            if (!query) return;
+
+            // Add User Message
+            messages.innerHTML += `<div class="bg-cyan/10 p-3 rounded-lg text-white text-right ml-8">${input.value}</div>`;
+            
+            // Generate Bot Response
+            let response = "I'm sorry, I couldn't find that specific term. Try asking about 'Glioma', 'Malignant', 'CNN', or check for typos. I'm here to explain the technical words used in our AI analysis.";
+            
+            // Better matching logic
+            let bestMatch = null;
+            for (const term in medicalTerms) {
+                if (query.includes(term)) {
+                    if (!bestMatch || term.length > bestMatch.length) {
+                        bestMatch = term;
+                    }
+                }
+            }
+
+            if (bestMatch) {
+                response = `<strong>${bestMatch.toUpperCase()}:</strong> ${medicalTerms[bestMatch]}`;
+            }
+
+            setTimeout(() => {
+                messages.innerHTML += `<div class="bg-white/5 p-3 rounded-lg text-gray-300 mr-8 animate-fade-in">${response}</div>`;
+                messages.scrollTop = messages.scrollHeight;
+            }, 500);
+
+            input.value = '';
+            messages.scrollTop = messages.scrollHeight;
+        }
+
+        // Allow Enter key to send
+        document.getElementById('chat-input').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') handleChat();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,236 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="flex flex-col lg:flex-row gap-8">
+        
+        <!-- Sidebar / Upload Area -->
+        <div class="w-full lg:w-1/3">
+            <div class="glass p-6 rounded-2xl sticky top-24">
+                <h2 class="text-2xl font-bold font-heading mb-6 flex items-center">
+                    <i class="fas fa-upload text-cyan mr-3"></i> Upload Scan
+                </h2>
+                
+                <form action="/detect" method="POST" enctype="multipart/form-data" id="uploadForm">
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-400 mb-2">Patient Name</label>
+                        <input type="text" name="patient_name" placeholder="Enter patient name" required
+                            class="w-full bg-[#0B132B] border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-cyan transition-all">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4 mb-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-400 mb-2">Age</label>
+                            <input type="number" name="age" placeholder="Age" required
+                                class="w-full bg-[#0B132B] border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-cyan transition-all">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-400 mb-2">Gender</label>
+                            <select name="gender" class="w-full bg-[#0B132B] border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-cyan transition-all appearance-none">
+                                <option>Male</option>
+                                <option>Female</option>
+                                <option>Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-400 mb-2">Cancer Category</label>
+                        <select name="cancer_type" class="w-full bg-[#0B132B] border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-cyan transition-all appearance-none">
+                            <option>Brain Cancer</option>
+                            <option>Breast Cancer</option>
+                            <option>Kidney Cancer</option>
+                            <option>Leukemia</option>
+                            <option>Cervical Cancer</option>
+                            <option>Lung & Colon Cancer</option>
+                            <option>Oral Cancer</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-8">
+                        <label class="block text-sm font-medium text-gray-400 mb-2">MRI/CT Image</label>
+                        <div id="dropZone" class="border-2 border-dashed border-white/10 rounded-xl p-8 text-center hover:border-cyan/50 transition-all cursor-pointer bg-white/5">
+                            <i class="fas fa-cloud-upload-alt text-4xl text-gray-500 mb-4"></i>
+                            <p class="text-sm text-gray-400" id="fileNameDisplay">Drag and drop or click to upload</p>
+                            <input type="file" name="file" id="fileInput" class="hidden" accept="image/*" required>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" id="analyzeBtn" class="w-full bg-cyan text-[#0B132B] font-bold py-4 rounded-xl hover:bg-[#5BC0BE] transition-all transform active:scale-95 flex items-center justify-center">
+                        <i class="fas fa-microscope mr-2"></i> Run AI Analysis
+                    </button>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Results Area -->
+        <div class="w-full lg:w-2/3">
+            {% if result %}
+            <div class="animate-fade-in">
+                <!-- Result Header Card -->
+                <div class="glass p-8 rounded-2xl border-l-8 {% if result.color == 'red' %}border-red-500{% elif result.color == 'orange' %}border-orange-500{% else %}border-green-500{% endif %} mb-8">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                        <div>
+                            <span class="text-xs font-bold uppercase tracking-widest {% if result.color == 'red' %}text-red-400{% elif result.color == 'orange' %}text-orange-400{% else %}text-green-400{% endif %} mb-2 block">
+                                {{ result.category }} Result
+                            </span>
+                            <h2 class="text-4xl font-bold font-heading">{{ result.class }}</h2>
+                            <p class="text-gray-400 mt-2">Patient: <span class="text-white">{{ result.patient_name }}</span> ({{ result.patient_age }}y, {{ result.patient_gender }}) | Status: <span class="{% if result.color == 'red' %}text-red-400{% else %}text-green-400{% endif %} font-bold">{{ result.status }}</span></p>
+                        </div>
+                        <div class="text-right">
+                            <div class="inline-flex flex-col items-center p-4 rounded-2xl bg-white/5 border border-white/10">
+                                <span class="text-3xl font-bold text-cyan">{{ result.confidence|round(2) }}%</span>
+                                <span class="text-[10px] text-gray-500 uppercase font-bold tracking-tighter">Confidence Score</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Scan Preview -->
+                    <div class="glass rounded-2xl p-4 overflow-hidden relative group">
+                        <div class="absolute inset-0 bg-cyan/5 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all pointer-events-none">
+                            <div class="border-2 border-cyan/50 w-full animate-[pulse_2s_infinite]"></div>
+                        </div>
+                        <img src="{{ result.image_url }}" alt="Patient Scan" class="w-full h-auto rounded-xl">
+                        <div class="mt-4 flex justify-between items-center px-2">
+                            <span class="text-xs text-gray-500 uppercase">Input Scan Analysis</span>
+                            <span class="px-2 py-1 bg-white/5 rounded text-[10px] text-gray-400 font-mono">ID: AI-{{ range(1000, 9999)|random }}</span>
+                        </div>
+                    </div>
+
+                    <!-- Clinical Findings -->
+                    <div class="space-y-6">
+                        <div class="glass p-6 rounded-2xl">
+                            <h4 class="font-bold font-heading mb-4 text-cyan uppercase text-sm tracking-widest">Clinical Findings</h4>
+                            <p class="text-gray-300 leading-relaxed text-sm">
+                                {{ result.info }}
+                            </p>
+                        </div>
+                        
+                        <div class="glass p-6 rounded-2xl">
+                            <h4 class="font-bold font-heading mb-4 text-cyan uppercase text-sm tracking-widest">Risk Assessment</h4>
+                            <div class="flex items-center space-x-4">
+                                <div class="flex-grow bg-white/5 h-2 rounded-full overflow-hidden">
+                                    <div class="h-full {% if result.color == 'red' %}bg-red-500 w-[85%]{% elif result.color == 'orange' %}bg-orange-500 w-[50%]{% else %}bg-green-500 w-[15%]{% endif %}"></div>
+                                </div>
+                                <span class="font-bold text-sm {% if result.color == 'red' %}text-red-400{% else %}text-green-400{% endif %}">{{ result.risk }}</span>
+                            </div>
+                            <p class="text-[10px] text-gray-500 mt-4 uppercase tracking-tighter">AI determined risk level based on morphological features</p>
+                        </div>
+
+                        <div class="flex gap-4">
+                            <a href="{{ result.report_url }}" download class="flex-grow bg-white/10 hover:bg-white/20 text-white font-bold py-4 rounded-xl transition-all flex items-center justify-center">
+                                <i class="fas fa-file-pdf mr-2 text-red-500"></i> Download Report
+                            </a>
+                            <button onclick="window.print()" class="px-6 glass hover:bg-white/5 rounded-xl transition-all">
+                                <i class="fas fa-print"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <!-- Placeholder / Empty State -->
+            <div class="h-full flex flex-col items-center justify-center text-center p-12 glass rounded-2xl border-dashed border-white/10 min-h-[500px]" id="emptyState">
+                <div class="w-24 h-24 bg-white/5 rounded-full flex items-center justify-center mb-8">
+                    <i class="fas fa-microscope text-5xl text-gray-600"></i>
+                </div>
+                <h3 class="text-2xl font-bold font-heading mb-4 text-gray-400">Ready for Analysis</h3>
+                <p class="text-gray-500 max-w-sm">
+                    Upload a medical scan to begin the AI-powered diagnostic process. The system will provide classification, confidence, and a detailed clinical report.
+                </p>
+            </div>
+            
+            <!-- Scanning Animation (Hidden by default) -->
+            <div class="hidden h-full flex flex-col items-center justify-center text-center p-12 glass rounded-2xl border-cyan/20 min-h-[500px]" id="scanningState">
+                <div class="relative w-48 h-48 mb-12">
+                    <div class="absolute inset-0 border-4 border-cyan/20 rounded-full"></div>
+                    <div class="absolute inset-0 border-4 border-t-cyan rounded-full animate-spin"></div>
+                    <div class="absolute inset-4 border-2 border-dashed border-cyan/30 rounded-full animate-[spin_10s_linear_infinite]"></div>
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <i class="fas fa-dna text-4xl text-cyan animate-pulse"></i>
+                    </div>
+                </div>
+                <h3 class="text-2xl font-bold font-heading mb-4 text-cyan">AI Analysis in Progress...</h3>
+                <p class="text-gray-400 max-w-sm" id="statusMessage">Analyzing cellular morphology...</p>
+                <div class="mt-8 w-64 bg-white/5 h-1.5 rounded-full overflow-hidden">
+                    <div class="h-full bg-cyan transition-all duration-500" id="progressBar" style="width: 0%"></div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+    const fileInput = document.getElementById('fileInput');
+    const dropZone = document.getElementById('dropZone');
+    const fileNameDisplay = document.getElementById('fileNameDisplay');
+    const uploadForm = document.getElementById('uploadForm');
+    const emptyState = document.getElementById('emptyState');
+    const scanningState = document.getElementById('scanningState');
+    const statusMessage = document.getElementById('statusMessage');
+    const progressBar = document.getElementById('progressBar');
+
+    // Drag and Drop
+    dropZone.addEventListener('click', () => fileInput.click());
+    
+    fileInput.addEventListener('change', (e) => {
+        if (e.target.files.length > 0) {
+            fileNameDisplay.textContent = e.target.files[0].name;
+            fileNameDisplay.classList.add('text-cyan');
+        }
+    });
+
+    dropZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropZone.classList.add('border-cyan');
+    });
+
+    dropZone.addEventListener('dragleave', () => {
+        dropZone.classList.remove('border-cyan');
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('border-cyan');
+        if (e.dataTransfer.files.length > 0) {
+            fileInput.files = e.dataTransfer.files;
+            fileNameDisplay.textContent = e.dataTransfer.files[0].name;
+            fileNameDisplay.classList.add('text-cyan');
+        }
+    });
+
+    // Form Submission Animation
+    if(uploadForm) {
+        uploadForm.addEventListener('submit', (e) => {
+            if(emptyState && scanningState) {
+                emptyState.classList.add('hidden');
+                scanningState.classList.remove('hidden');
+                
+                const messages = [
+                    "Loading AI Model...",
+                    "Normalizing Image Pixels...",
+                    "Detecting Pathological Markers...",
+                    "Calculating Confidence Metrics...",
+                    "Generating Diagnostic Report..."
+                ];
+                
+                let i = 0;
+                let progress = 0;
+                const interval = setInterval(() => {
+                    if (i < messages.length) {
+                        statusMessage.textContent = messages[i];
+                        progress += 20;
+                        progressBar.style.width = progress + "%";
+                        i++;
+                    } else {
+                        clearInterval(interval);
+                    }
+                }, 800);
+            }
+        });
+    }
+</script>
+{% endblock %}
