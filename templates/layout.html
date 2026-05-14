@@ -52,54 +52,9 @@
         .animate-fade-in {
             animation: fadeIn 0.8s ease-out forwards;
         }
-        /* Chatbot Styles */
-        #chat-widget {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            z-index: 1000;
-        }
-        #chat-window {
-            display: none;
-            width: 350px;
-            height: 450px;
-            flex-direction: column;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
-
-    <!-- Medical Chatbot Widget -->
-    <div id="chat-widget">
-        <!-- Chat Window -->
-        <div id="chat-window" class="glass rounded-2xl mb-4 overflow-hidden border border-cyan/30 flex flex-col">
-            <div class="bg-cyan p-4 flex justify-between items-center">
-                <span class="text-[#0B132B] font-bold flex items-center">
-                    <i class="fas fa-robot mr-2"></i> Medical Glossary AI
-                </span>
-                <button onclick="toggleChat()" class="text-[#0B132B] hover:scale-110 transition-all">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div id="chat-messages" class="flex-grow p-4 overflow-y-auto space-y-4 text-sm scrollbar-hide">
-                <div class="bg-white/5 p-3 rounded-lg text-gray-300">
-                    Hello! I'm here to help you understand technical terms used in your report or on this site. Ask me about terms like "Glioma", "Morphology", or "CNN".
-                </div>
-            </div>
-            <div class="p-4 border-t border-white/10 flex gap-2">
-                <input type="text" id="chat-input" placeholder="Ask about a term..." 
-                    class="flex-grow bg-[#0B132B] border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan text-sm">
-                <button onclick="handleChat()" class="bg-cyan text-[#0B132B] p-2 rounded-lg hover:bg-[#5BC0BE]">
-                    <i class="fas fa-paper-plane"></i>
-                </button>
-            </div>
-        </div>
-        <!-- Toggle Button -->
-        <button onclick="toggleChat()" class="bg-cyan text-[#0B132B] w-14 h-14 rounded-full shadow-lg shadow-cyan/30 flex items-center justify-center hover:scale-110 transition-all">
-            <i class="fas fa-comment-medical text-2xl" id="chat-icon"></i>
-        </button>
-    </div>
 
     <!-- Navigation -->
     <nav class="fixed w-full z-50 glass border-b border-white/10">
@@ -188,77 +143,6 @@
             }, { threshold: 0.1 });
 
             document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
-        });
-
-        // Chatbot Logic
-        const medicalTerms = {
-            "glioma": "A Glioma is a type of tumor that occurs in the brain and spinal cord. It begins in the glue-like supportive cells (glial cells) that surround nerve cells and help them function.",
-            "meningioma": "A meningioma is a tumor that arises from the meninges — the membranes that surround your brain and spinal cord. Most are noncancerous (benign), though rarely a meningioma can be cancerous (malignant).",
-            "morphology": "Morphology refers to the physical appearance, shape, and structure of cells or tissues. AI uses this to identify abnormalities that deviate from healthy tissue patterns.",
-            "adenocarcinoma": "Adenocarcinoma is a type of cancer that starts in glands that line the inside of the organs. It is the most common type of colon cancer and many types of lung cancer.",
-            "cnn": "Convolutional Neural Network (CNN) is a Deep Learning architecture specifically designed to detect patterns in images. In this site, it's used to identify cancerous features in MRI/CT scans.",
-            "watershed": "The Watershed algorithm is a classic image segmentation technique. It treats the image like a map where light areas are high and dark areas are low, helping to find the exact 'boundaries' of a tumor.",
-            "pathological": "In medicine, 'Pathological' means caused by or involving disease. A pathological finding on a scan indicates that an abnormality or tumor was detected.",
-            "benign": "Benign refers to a condition, tumor, or growth that is not cancerous. This means it does not spread to other parts of the body and is usually not life-threatening.",
-            "malignant": "Malignant means the tumor is cancerous. These tumors can grow uncontrollably and spread (metastasize) to other parts of the body, requiring urgent medical intervention.",
-            "carcinoma": "Carcinoma is a cancer that begins in the skin or in tissues that line or cover internal organs. Most cancers of the breast, lung, colon, and prostate are carcinomas.",
-            "lesion": "A lesion is an area of abnormal tissue. It can be benign (noncancerous) or malignant (cancerous). In imaging, it often refers to the tumor itself.",
-            "confidence": "The Confidence Score is the AI's 'certainty' level. A 95% score means the model is highly confident in its classification based on the patterns it identified in the image.",
-            "sarcoma": "Sarcoma is a type of cancer that can occur in various locations in your body, specifically in the bones and soft tissues (muscle, fat, blood vessels).",
-            "pituitary": "The pituitary gland is a small, pea-sized gland at the base of your brain. Tumors here (adenomas) can affect hormones and vision.",
-            "leukemia": "Leukemia is cancer of the body's blood-forming tissues, including the bone marrow and the lymphatic system. It usually involves the overproduction of abnormal white blood cells.",
-            "radiology": "Radiology is a medical specialty that uses medical imaging to diagnose and treat diseases seen within the body.",
-            "mri": "Magnetic Resonance Imaging (MRI) is a medical imaging technique used in radiology to form pictures of the anatomy and the physiological processes of the body.",
-            "ct scan": "A Computed Tomography (CT) scan uses computers and rotating X-ray machines to create cross-sectional images of the body.",
-            "hello": "Hello! I am the Medical Glossary Assistant. How can I help you understand your report today?",
-            "hi": "Hi there! Feel free to ask me about any medical or technical terms you see on this site.",
-            "help": "You can ask me definitions for terms like 'Glioma', 'Malignant', 'CNN', or 'Morphology'. Just type the word you want to know about!"
-        };
-
-        function toggleChat() {
-            const window = document.getElementById('chat-window');
-            window.style.display = window.style.display === 'flex' ? 'none' : 'flex';
-        }
-
-        function handleChat() {
-            const input = document.getElementById('chat-input');
-            const messages = document.getElementById('chat-messages');
-            const query = input.value.toLowerCase().trim();
-            
-            if (!query) return;
-
-            // Add User Message
-            messages.innerHTML += `<div class="bg-cyan/10 p-3 rounded-lg text-white text-right ml-8">${input.value}</div>`;
-            
-            // Generate Bot Response
-            let response = "I'm sorry, I couldn't find that specific term. Try asking about 'Glioma', 'Malignant', 'CNN', or check for typos. I'm here to explain the technical words used in our AI analysis.";
-            
-            // Better matching logic
-            let bestMatch = null;
-            for (const term in medicalTerms) {
-                if (query.includes(term)) {
-                    if (!bestMatch || term.length > bestMatch.length) {
-                        bestMatch = term;
-                    }
-                }
-            }
-
-            if (bestMatch) {
-                response = `<strong>${bestMatch.toUpperCase()}:</strong> ${medicalTerms[bestMatch]}`;
-            }
-
-            setTimeout(() => {
-                messages.innerHTML += `<div class="bg-white/5 p-3 rounded-lg text-gray-300 mr-8 animate-fade-in">${response}</div>`;
-                messages.scrollTop = messages.scrollHeight;
-            }, 500);
-
-            input.value = '';
-            messages.scrollTop = messages.scrollHeight;
-        }
-
-        // Allow Enter key to send
-        document.getElementById('chat-input').addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') handleChat();
         });
     </script>
 </body>
