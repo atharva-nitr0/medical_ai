@@ -3,6 +3,11 @@ import numpy as np
 from PIL import Image
 import os
 
+# --- Memory Optimization for Render Free Tier ---
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' # Suppress TF logs to save memory
+tf.config.set_visible_devices([], 'GPU') # Force CPU only
+# -----------------------------------------------
+
 # Load the model once using a relative path for deployment
 MODEL_PATH = "brain_tumor_detector.h5"
 model = tf.keras.models.load_model(MODEL_PATH)
