@@ -99,9 +99,24 @@ def get_prediction(image_path):
     elif "oral_scc" in file_name:
         res.update({"status": "Pathological", "class": "Oral Squamous Cell Carcinoma", "category": "Oral Cancer", "color": "red", "risk": "High", "info": "Squamous cell malignancy detected in oral mucosa."})
 
+    # --- Dynamic Risk Assessment (New Segregation) ---
+    if res["status"] == "Pathological":
+        if res["confidence"] > 85:
+            res["risk"] = "Critical / High"
+            res["color"] = "red"
+        elif res["confidence"] > 70:
+            res["risk"] = "Moderate"
+            res["color"] = "orange"
+        else:
+            res["risk"] = "Low / Potential"
+            res["color"] = "yellow"
     else:
-        # Generic fallback
-        if confidence > 50:
-            res.update({"status": "Pathological", "class": "Abnormal Growth Detected", "category": "General Oncology", "color": "red", "risk": "High", "info": "The system detected suspicious features requiring medical review."})
+        # Healthy scan refinements
+        if res["confidence"] > 90:
+            res["risk"] = "Minimal"
+            res["color"] = "green"
+        else:
+            res["risk"] = "Low"
+            res["color"] = "green"
 
     return res
